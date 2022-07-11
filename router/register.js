@@ -27,6 +27,15 @@ registerRouter.post("/signup", async (req, res) => {
 		return res.json({ status: "error", error: "Invalid email" });
 	}
 
+	let emailUsed = await readEmail(pool, email);
+
+	if (emailUsed) {
+		return res.json({
+			status: "error",
+			error: "Email is already taken",
+		});
+	}
+
 	const passwordHash = await bcrypt.hash(password, 10);
 
 	try {
