@@ -51,4 +51,22 @@ function readEmail(pool, email) {
 	});
 }
 
-module.exports = { insertUser, readEmail };
+function updatePhoto(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+
+			console.log("data", data);
+
+			connection.query(
+				"UPDATE `user` SET `imgUrl`=? WHERE `userId`=?",
+				[data.imageId, data.userId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result[0]);
+				}
+			);
+		});
+	});
+}
+
+module.exports = { insertUser, readEmail, updatePhoto };

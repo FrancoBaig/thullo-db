@@ -55,12 +55,8 @@ registerRouter.post("/signup", async (req, res) => {
 registerRouter.post("/login", async (req, res) => {
 	const { email, password } = req.body;
 
-	console.log("Entró", req.body);
-
 	// Encontrar usuario
 	let user = await readEmail(pool, email);
-
-	console.log("user?", user);
 
 	if (user == undefined) {
 		return res.json({
@@ -71,15 +67,16 @@ registerRouter.post("/login", async (req, res) => {
 
 	if (await bcrypt.compare(password, user.password)) {
 		const token = jwt.sign(
-			{ id: user.id, name: user.name },
-			process.env.JWT_SECRET
+			{ id: user.userId, email: user.email, name: user.name },
+			process.env.JWT_SECRET,
+			{ noTimestamp: true, expiresIn: "1h" }
 		);
 
 		const data = {
 			name: user.name,
 			email: user.email,
 			token: token,
-			image_url: user.imgUrl || "",
+			image_id: user.imgUrl,
 		};
 
 		return res.json({ status: "ok", data: data });
