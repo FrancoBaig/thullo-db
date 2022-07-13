@@ -1,5 +1,6 @@
 // get the client
 const mysql = require("mysql");
+
 require("dotenv").config();
 
 // create the connection to database

@@ -55,8 +55,12 @@ registerRouter.post("/signup", async (req, res) => {
 registerRouter.post("/login", async (req, res) => {
 	const { email, password } = req.body;
 
+	console.log("Entró", req.body);
+
 	// Encontrar usuario
 	let user = await readEmail(pool, email);
+
+	console.log("user?", user);
 
 	if (user == undefined) {
 		return res.json({
@@ -70,7 +74,15 @@ registerRouter.post("/login", async (req, res) => {
 			{ id: user.id, name: user.name },
 			process.env.JWT_SECRET
 		);
-		return res.json({ status: "ok", data: token });
+
+		const data = {
+			name: user.name,
+			email: user.email,
+			token: token,
+			image_url: user.imgUrl || "",
+		};
+
+		return res.json({ status: "ok", data: data });
 	}
 
 	return res.json({ status: "error", error: "Invalid email or password" });
