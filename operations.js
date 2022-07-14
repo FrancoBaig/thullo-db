@@ -70,6 +70,21 @@ function readUserBoards(pool, userId) {
 	});
 }
 
+function readColumn(pool, boardId) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"SELECT `column`.idColumn, `column`.title,   task.idTask, task.content, task.content, task.coverUrl FROM `column` LEFT JOIN task ON `column`.`idColumn` = task.Column_idColumn WHERE `column`.`Board_boardId` = ?",
+				[boardId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function updatePhoto(pool, data) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -88,4 +103,10 @@ function updatePhoto(pool, data) {
 	});
 }
 
-module.exports = { insertUser, readEmail, updatePhoto, readUserBoards };
+module.exports = {
+	insertUser,
+	readEmail,
+	updatePhoto,
+	readUserBoards,
+	readColumn,
+};

@@ -1,7 +1,18 @@
 const boardRouter = require("express").Router();
 const jwt = require("jsonwebtoken");
 const pool = require("../mysql_connector");
-const { readUserBoards } = require("../operations");
+const { readUserBoards, readColumn } = require("../operations");
+
+boardRouter.get("/:boardId", async (req, res) => {
+	const boardId = req.params.boardId;
+
+	try {
+		const response = await readColumn(pool, boardId);
+		return res.status(200).json(response);
+	} catch (err) {
+		console.log(err);
+	}
+});
 
 boardRouter.get("/", async (req, res) => {
 	const token = req.get("authorization");
