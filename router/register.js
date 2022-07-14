@@ -72,6 +72,9 @@ registerRouter.post("/login", async (req, res) => {
 			{ noTimestamp: true, expiresIn: "1h" }
 		);
 
+		console.log("token", token);
+		
+
 		const data = {
 			name: user.name,
 			email: user.email,

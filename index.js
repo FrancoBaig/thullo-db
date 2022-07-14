@@ -6,6 +6,7 @@ const cloudinary = require("./cloudinary/cloudinary");
 const middleware = require("./utils/middleware");
 const registerRouter = require("./router/register");
 const photoRouter = require("./router/photo");
+const boardRouter = require("./router/board");
 
 app.use(cors());
 app.use(express.json());
@@ -17,6 +18,7 @@ app.listen(3001, () => {
 
 app.use("/api/register", registerRouter);
 app.use("/api/photo", photoRouter);
+app.use("/api/board", boardRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

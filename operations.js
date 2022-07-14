@@ -51,6 +51,25 @@ function readEmail(pool, email) {
 	});
 }
 
+function readUserBoards(pool, userId) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				`SELECT board.boardId, board.title, board.isPrivate, board.description, board.image_url
+				FROM user
+				JOIN user_has_board ON user.userId = user_has_board.user_userId
+				JOIN board ON user_has_board.Board_boardId = board.boardId
+				WHERE user.userId = ?`,
+				[userId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function updatePhoto(pool, data) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -69,4 +88,4 @@ function updatePhoto(pool, data) {
 	});
 }
 
-module.exports = { insertUser, readEmail, updatePhoto };
+module.exports = { insertUser, readEmail, updatePhoto, readUserBoards };
