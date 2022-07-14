@@ -17,3 +17,6 @@ app.listen(3001, () => {
 
 app.use("/api/register", registerRouter);
 app.use("/api/photo", photoRouter);
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
