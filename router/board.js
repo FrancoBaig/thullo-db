@@ -4,6 +4,7 @@ const pool = require("../mysql_connector");
 const {
 	insertColumn,
 	updateBoardDescription,
+	updateColumnName,
 	readUserBoards,
 	readColumn,
 	createBoard,
@@ -98,6 +99,23 @@ boardRouter.put("/description", async (req, res) => {
 		};
 
 		const result = await updateBoardDescription(pool, data);
+
+		return res.status(200).end();
+	} catch (err) {
+		console.log(err);
+	}
+});
+
+boardRouter.put("/column", async (req, res) => {
+	const body = req.body;
+
+	try {
+		const data = {
+			title: body.title,
+			idColumn: body.idCol,
+		};
+
+		const result = await updateColumnName(pool, data);
 
 		return res.status(200).end();
 	} catch (err) {

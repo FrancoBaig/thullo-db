@@ -147,6 +147,21 @@ function updateBoardDescription(pool, data) {
 	});
 }
 
+function updateColumnName(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"UPDATE `column` SET `title` = ? WHERE `column`.`idColumn` = ? ",
+				[data.title, data.idColumn],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function createBoard(pool, data) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -180,6 +195,7 @@ function assignBoardToUser(pool, data) {
 module.exports = {
 	insertUser,
 	insertColumn,
+	updateColumnName,
 	readEmail,
 	updatePhoto,
 	updateBoardDescription,
