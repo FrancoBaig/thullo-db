@@ -132,6 +132,21 @@ function updatePhoto(pool, data) {
 	});
 }
 
+function updateBoardDescription(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"UPDATE `board` SET `description` = ? WHERE `board`.`boardId` = ? ",
+				[data.description, data.boardId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function createBoard(pool, data) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -167,6 +182,7 @@ module.exports = {
 	insertColumn,
 	readEmail,
 	updatePhoto,
+	updateBoardDescription,
 	readUserBoards,
 	readBoard,
 	readColumn,
