@@ -2,6 +2,7 @@ const boardRouter = require("express").Router();
 const jwt = require("jsonwebtoken");
 const pool = require("../mysql_connector");
 const {
+	insertColumn,
 	readUserBoards,
 	readColumn,
 	createBoard,
@@ -31,6 +32,23 @@ boardRouter.get("/", async (req, res) => {
 		user = jwt.verify(token, process.env.JWT_SECRET);
 		const userBoards = await readUserBoards(pool, user.id);
 		return res.status(200).json(userBoards);
+	} catch (err) {
+		return res.json({ status: "error", error: ";))" });
+	}
+});
+
+boardRouter.post("/column", async (req, res) => {
+	const body = req.body;
+
+	try {
+		const data = {
+			title: body.title,
+			Board_boardId: body.Board_boardId,
+		};
+
+		const response = await insertColumn(pool, data);
+
+		return res.status(200).json(response);
 	} catch (err) {
 		return res.json({ status: "error", error: ";))" });
 	}

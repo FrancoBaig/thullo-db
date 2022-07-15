@@ -36,6 +36,23 @@ function insertUser(pool, data) {
 	});
 }
 
+function insertColumn(pool, data) {
+	let insertQuery =
+		"INSERT INTO `column` (idColumn, title, Board_boardId) VALUES (null, ?, ?)";
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				insertQuery,
+				[data.title, data.Board_boardId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function readEmail(pool, email) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -147,6 +164,7 @@ function assignBoardToUser(pool, data) {
 
 module.exports = {
 	insertUser,
+	insertColumn,
 	readEmail,
 	updatePhoto,
 	readUserBoards,
