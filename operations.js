@@ -70,6 +70,21 @@ function readUserBoards(pool, userId) {
 	});
 }
 
+function readBoard(pool, boardId) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				`SELECT * from "board" WHERE "board".boardId = ?`,
+				[boardId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function readColumn(pool, boardId) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -89,9 +104,6 @@ function updatePhoto(pool, data) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
 			if (err) throw err;
-
-			console.log("data", data);
-
 			connection.query(
 				"UPDATE `user` SET `imgUrl`=? WHERE `userId`=?",
 				[data.imageId, data.userId],
@@ -103,10 +115,43 @@ function updatePhoto(pool, data) {
 	});
 }
 
+function createBoard(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"INSERT INTO `board` (`boardId`, `title`, `isPrivate`, `description`, `image_url`) VALUES (NULL, ?, ?, ?, ?)",
+				[data.title, data.isPrivate, data.description, data.image_url],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
+function assignBoardToUser(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"INSERT INTO `user_has_board` (`user_userId`, `Board_boardId`) VALUES (?, ?)",
+				[data.userId, data.boardId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 module.exports = {
 	insertUser,
 	readEmail,
 	updatePhoto,
 	readUserBoards,
+	readBoard,
 	readColumn,
+	createBoard,
+	assignBoardToUser,
 };
