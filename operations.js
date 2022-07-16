@@ -162,6 +162,21 @@ function updateColumnName(pool, data) {
 	});
 }
 
+function updateTaskTitle(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"UPDATE `task` SET `content` = ? WHERE `task`.`idTask` = ? ",
+				[data.content, data.idTask],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function createBoard(pool, data) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -199,6 +214,7 @@ module.exports = {
 	readEmail,
 	updatePhoto,
 	updateBoardDescription,
+	updateTaskTitle,
 	readUserBoards,
 	readBoard,
 	readColumn,

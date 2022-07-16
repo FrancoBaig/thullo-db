@@ -5,6 +5,7 @@ const {
 	insertColumn,
 	updateBoardDescription,
 	updateColumnName,
+	updateTaskTitle,
 	readUserBoards,
 	readColumn,
 	createBoard,
@@ -83,7 +84,7 @@ boardRouter.post("/", async (req, res) => {
 
 		const ress = await assignBoardToUser(pool, assignData);
 
-		return res.status(200).end();
+		return res.status(200).json(assignData);
 	} catch (err) {
 		return res.json({ status: "error", error: ";))" });
 	}
@@ -99,6 +100,23 @@ boardRouter.put("/description", async (req, res) => {
 		};
 
 		const result = await updateBoardDescription(pool, data);
+
+		return res.status(200).end();
+	} catch (err) {
+		console.log(err);
+	}
+});
+
+boardRouter.put("/column", async (req, res) => {
+	const body = req.body;
+
+	try {
+		const data = {
+			title: body.title,
+			idColumn: body.idCol,
+		};
+
+		const result = await updateColumnName(pool, data);
 
 		return res.status(200).end();
 	} catch (err) {
