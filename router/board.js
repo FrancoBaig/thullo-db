@@ -20,6 +20,8 @@ const {
 	assignBoardToUser,
 	deleteTasksFromColumn,
 	deleteColumn,
+	deleteUserHasBoard,
+	readAllUsersFromBoard,
 } = require("../operations");
 
 boardRouter.get("/:boardId", async (req, res) => {
@@ -46,6 +48,17 @@ boardRouter.get("/", async (req, res) => {
 		return res.status(200).json(userBoards);
 	} catch (err) {
 		return res.json({ status: "error", error: ";))" });
+	}
+});
+
+boardRouter.get("/all/users/:boardId", async (req, res) => {
+	const boardId = req.params.boardId;
+
+	try {
+		const allUsers = await readAllUsersFromBoard(pool, boardId);
+		return res.status(200).json(allUsers);
+	} catch (err) {
+		return res.json({ status: "error" });
 	}
 });
 
@@ -292,6 +305,40 @@ boardRouter.get("/users/:string", async (req, res) => {
 		return res.status(200).json(response);
 	} catch (err) {
 		console.log(err);
+	}
+});
+
+boardRouter.post("/assign", async (req, res) => {
+	const body = req.body;
+
+	const assignData = {
+		userId: body.userId,
+		boardId: body.boardId,
+	};
+
+	try {
+		await assignBoardToUser(pool, assignData);
+
+		return res.status(200).end();
+	} catch (err) {
+		return res.json({ status: "error" });
+	}
+});
+
+boardRouter.delete("/:boardId/:userId", async (req, res) => {
+	const boardId = req.params.boardId;
+	const userId = req.params.userId;
+
+	const data = {
+		userId: userId,
+		boardId: boardId,
+	};
+
+	try {
+		await deleteUserHasBoard(pool, data);
+		return res.status(200).end();
+	} catch (err) {
+		return res.json({ status: "error" });
 	}
 });
 

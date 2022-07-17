@@ -149,6 +149,21 @@ function readColumn(pool, boardId) {
 	});
 }
 
+function readAllUsersFromBoard(pool, boardId) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"SELECT `user`.userId, `user`.name, `user`.email, `user`.imgUrl FROM `user` JOIN `user_has_board` ON `user`.userId = `user_has_board`.user_userId WHERE `user_has_board`.Board_boardId = ?",
+				[boardId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function updatePhoto(pool, data) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -346,6 +361,21 @@ function updateBoardPrivacity(pool, data) {
 	});
 }
 
+function deleteUserHasBoard(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"DELETE FROM `user_has_board` WHERE `user_has_board`.`user_userId` = ? AND `user_has_board`.`Board_boardId` = ?",
+				[data.userId, data.boardId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 module.exports = {
 	insertUser,
 	insertColumn,
@@ -363,9 +393,11 @@ module.exports = {
 	readUserBoards,
 	readBoard,
 	readColumn,
+	readAllUsersFromBoard,
 	searchUsersByEmail,
 	createBoard,
 	assignBoardToUser,
 	deleteTasksFromColumn,
 	deleteColumn,
+	deleteUserHasBoard,
 };
