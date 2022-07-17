@@ -64,12 +64,12 @@ boardRouter.post("/column", async (req, res) => {
 	}
 });
 
-boardRouter.delete("/column", async (req, res) => {
-	const body = req.body;
+boardRouter.delete("/column/:id", async (req, res) => {
+	const id = req.params.id;
 
 	try {
-		await deleteTasksFromColumn(pool, body.idColumn);
-		await deleteColumn(pool, body.idColumn);
+		await deleteTasksFromColumn(pool, id);
+		await deleteColumn(pool, id);
 
 		return res.status(200).end();
 	} catch (err) {
