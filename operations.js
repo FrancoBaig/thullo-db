@@ -149,6 +149,21 @@ function updatePhoto(pool, data) {
 	});
 }
 
+function updateTaskColumn(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"UPDATE `task` SET `Column_idColumn` = ? WHERE `task`.`idTask` = ?",
+				[data.idColumn, data.idTask],
+				(err, result) => {
+					return err ? reject(err) : resolve(result[0]);
+				}
+			);
+		});
+	});
+}
+
 function updateBoardDescription(pool, data) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -245,6 +260,7 @@ module.exports = {
 	insertTask,
 	updateTaskOrder,
 	updateColumnName,
+	updateTaskColumn,
 	readEmail,
 	updatePhoto,
 	updateBoardDescription,

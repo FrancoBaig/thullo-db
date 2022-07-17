@@ -7,6 +7,7 @@ const {
 	updateBoardDescription,
 	updateColumnName,
 	updateTaskOrder,
+	updateTaskColumn,
 	updateTaskTitle,
 	readUserBoards,
 	readColumn,
@@ -69,11 +70,7 @@ boardRouter.post("/task", async (req, res) => {
 			position: body.position,
 		};
 
-		console.log("data", data);
-
 		const response = await insertTask(pool, data);
-
-		console.log("response new task", response);
 
 		return res.status(200).json(response);
 	} catch (err) {
@@ -81,7 +78,6 @@ boardRouter.post("/task", async (req, res) => {
 	}
 });
 
-// necesito tener la columnID
 boardRouter.put("/task/position", async (req, res) => {
 	const body = req.body;
 	const idColumn = body[0].idColumn;
@@ -102,6 +98,16 @@ boardRouter.put("/task/position", async (req, res) => {
 	}
 
 	return res.status(200).end();
+});
+
+boardRouter.put("/task/column", async (req, res) => {
+	const data = req.body;
+
+	try {
+		await updateTaskColumn(pool, data);
+	} catch (err) {
+		console.log(err);
+	}
 });
 
 boardRouter.post("/", async (req, res) => {
