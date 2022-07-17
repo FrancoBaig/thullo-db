@@ -55,7 +55,6 @@ registerRouter.post("/signup", async (req, res) => {
 registerRouter.post("/login", async (req, res) => {
 	const { email, password } = req.body;
 
-	// Encontrar usuario
 	let user = await readEmail(pool, email);
 
 	if (user == undefined) {
@@ -71,9 +70,6 @@ registerRouter.post("/login", async (req, res) => {
 			process.env.JWT_SECRET,
 			{ noTimestamp: true, expiresIn: "1h" }
 		);
-
-		console.log("token", token);
-		
 
 		const data = {
 			name: user.name,

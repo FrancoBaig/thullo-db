@@ -206,7 +206,7 @@ boardRouter.post("/", async (req, res) => {
 			boardId: board.insertId,
 		};
 
-		const ress = await assignBoardToUser(pool, assignData);
+		await assignBoardToUser(pool, assignData);
 
 		return res.status(200).json(assignData);
 	} catch (err) {
@@ -240,7 +240,7 @@ boardRouter.put("/column", async (req, res) => {
 			idColumn: body.idCol,
 		};
 
-		const result = await updateColumnName(pool, data);
+		await updateColumnName(pool, data);
 
 		return res.status(200).end();
 	} catch (err) {
@@ -257,7 +257,7 @@ boardRouter.put("/column", async (req, res) => {
 			idColumn: body.idCol,
 		};
 
-		const result = await updateColumnName(pool, data);
+		await updateColumnName(pool, data);
 
 		return res.status(200).end();
 	} catch (err) {

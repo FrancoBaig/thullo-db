@@ -7,8 +7,6 @@ const { updatePhoto } = require("../operations");
 photoRouter.post("/", async (req, res) => {
 	const { image, token } = req.body;
 
-	console.log("token", token);
-
 	let user = {};
 
 	try {
