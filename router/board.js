@@ -3,8 +3,10 @@ const jwt = require("jsonwebtoken");
 const pool = require("../mysql_connector");
 const {
 	insertColumn,
+	insertTask,
 	updateBoardDescription,
 	updateColumnName,
+	updateTaskOrder,
 	updateTaskTitle,
 	readUserBoards,
 	readColumn,
@@ -55,6 +57,51 @@ boardRouter.post("/column", async (req, res) => {
 	} catch (err) {
 		return res.json({ status: "error", error: ";))" });
 	}
+});
+
+boardRouter.post("/task", async (req, res) => {
+	const body = req.body;
+
+	try {
+		const data = {
+			content: body.content,
+			idColumn: body.idColumn,
+			position: body.position,
+		};
+
+		console.log("data", data);
+
+		const response = await insertTask(pool, data);
+
+		console.log("response new task", response);
+
+		return res.status(200).json(response);
+	} catch (err) {
+		return res.json({ status: "error", error: ";))" });
+	}
+});
+
+// necesito tener la columnID
+boardRouter.put("/task/position", async (req, res) => {
+	const body = req.body;
+	const idColumn = body[0].idColumn;
+	const ids = body[1];
+
+	for (let el of ids) {
+		const data = {
+			newPosition: el.position,
+			taskId: el.taskId,
+			idColumn: idColumn,
+		};
+
+		try {
+			await updateTaskOrder(pool, data);
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	return res.status(200).end();
 });
 
 boardRouter.post("/", async (req, res) => {

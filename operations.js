@@ -53,6 +53,23 @@ function insertColumn(pool, data) {
 	});
 }
 
+function insertTask(pool, data) {
+	let insertQuery =
+		"INSERT INTO `task` (`idTask`, `content`, `coverUrl`, `Column_idColumn`, `position`) VALUES (NULL, ?, NULL, ?, ?)";
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				insertQuery,
+				[data.content, data.idColumn, data.position],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function readEmail(pool, email) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -107,7 +124,7 @@ function readColumn(pool, boardId) {
 		pool.getConnection(function (err, connection) {
 			if (err) throw err;
 			connection.query(
-				"SELECT `column`.idColumn, `column`.title,   task.idTask, task.content, task.content, task.coverUrl FROM `column` LEFT JOIN task ON `column`.`idColumn` = task.Column_idColumn WHERE `column`.`Board_boardId` = ?",
+				"SELECT `column`.idColumn, `column`.title, task.idTask, task.content, task.content, task.coverUrl FROM `column` LEFT JOIN task ON `column`.`idColumn` = task.Column_idColumn WHERE `column`.`Board_boardId` = ?",
 				[boardId],
 				(err, result) => {
 					return err ? reject(err) : resolve(result);
@@ -177,6 +194,21 @@ function updateTaskTitle(pool, data) {
 	});
 }
 
+function updateTaskOrder(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"UPDATE `task` SET `position` = ? WHERE `task`.`idTask` = ? AND `task`.`Column_idColumn` = ? ",
+				[data.newPosition, data.taskId, data.idColumn],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function createBoard(pool, data) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -210,6 +242,8 @@ function assignBoardToUser(pool, data) {
 module.exports = {
 	insertUser,
 	insertColumn,
+	insertTask,
+	updateTaskOrder,
 	updateColumnName,
 	readEmail,
 	updatePhoto,
