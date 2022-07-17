@@ -9,6 +9,8 @@ const {
 	updateTaskOrder,
 	updateTaskColumn,
 	updateTaskTitle,
+	updateTaskDescription,
+	updateTaskCover,
 	readUserBoards,
 	readColumn,
 	createBoard,
@@ -95,6 +97,60 @@ boardRouter.put("/task/position", async (req, res) => {
 		} catch (err) {
 			console.log(err);
 		}
+	}
+
+	return res.status(200).end();
+});
+
+boardRouter.put("/task/content", async (req, res) => {
+	const body = req.body;
+
+	const data = {
+		idTask: body.idTask,
+		idColumn: body.idColumn,
+		newContent: body.newContent,
+	};
+
+	try {
+		await updateTaskTitle(pool, data);
+	} catch (err) {
+		console.log(err);
+	}
+
+	return res.status(200).end();
+});
+
+boardRouter.put("/task/description", async (req, res) => {
+	const body = req.body;
+
+	const data = {
+		idTask: body.idTask,
+		idColumn: body.idColumn,
+		newDescription: body.newDescription,
+	};
+
+	try {
+		await updateTaskDescription(pool, data);
+	} catch (err) {
+		console.log(err);
+	}
+
+	return res.status(200).end();
+});
+
+boardRouter.put("/task/cover", async (req, res) => {
+	const body = req.body;
+
+	const data = {
+		idTask: body.idTask,
+		idColumn: body.idColumn,
+		newCoverUrl: body.newCoverUrl,
+	};
+
+	try {
+		await updateTaskCover(pool, data);
+	} catch (err) {
+		console.log(err);
 	}
 
 	return res.status(200).end();

@@ -199,8 +199,40 @@ function updateTaskTitle(pool, data) {
 		pool.getConnection(function (err, connection) {
 			if (err) throw err;
 			connection.query(
-				"UPDATE `task` SET `content` = ? WHERE `task`.`idTask` = ? ",
-				[data.content, data.idTask],
+				"UPDATE `task` SET `task`.`content` = ? WHERE `task`.`idTask` = ? AND `Column_idColumn` = ?",
+				[data.newContent, data.idTask, data.idColumn],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
+function updateTaskDescription(pool, data) {
+	console.log("data pasada para cambiar description", data);
+
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"UPDATE `task` SET `task`.`description` = ? WHERE `task`.`idTask` = ?",
+				[data.newDescription, data.idTask],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
+function updateTaskCover(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"UPDATE `task` SET `task`.`coverUrl` = ? WHERE `task`.`idTask` = ? AND `Column_idColumn` = ?",
+				[data.newCoverUrl, data.idTask, data.idColumn],
 				(err, result) => {
 					return err ? reject(err) : resolve(result);
 				}
@@ -261,10 +293,12 @@ module.exports = {
 	updateTaskOrder,
 	updateColumnName,
 	updateTaskColumn,
+	updateTaskTitle,
+	updateTaskDescription,
+	updateTaskCover,
 	readEmail,
 	updatePhoto,
 	updateBoardDescription,
-	updateTaskTitle,
 	readUserBoards,
 	readBoard,
 	readColumn,
