@@ -16,6 +16,8 @@ const {
 	createBoard,
 	readBoard,
 	assignBoardToUser,
+	deleteTasksFromColumn,
+	deleteColumn,
 } = require("../operations");
 
 boardRouter.get("/:boardId", async (req, res) => {
@@ -59,6 +61,19 @@ boardRouter.post("/column", async (req, res) => {
 		return res.status(200).json(response);
 	} catch (err) {
 		return res.json({ status: "error", error: ";))" });
+	}
+});
+
+boardRouter.delete("/column", async (req, res) => {
+	const body = req.body;
+
+	try {
+		await deleteTasksFromColumn(pool, body.idColumn);
+		await deleteColumn(pool, body.idColumn);
+
+		return res.status(200).end();
+	} catch (err) {
+		return res.json({ status: "error", error: "index error" });
 	}
 });
 

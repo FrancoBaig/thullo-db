@@ -286,6 +286,36 @@ function assignBoardToUser(pool, data) {
 	});
 }
 
+function deleteTasksFromColumn(pool, idColumn) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"DELETE FROM `task` WHERE `task`.Column_idColumn = ?",
+				[idColumn],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
+function deleteColumn(pool, idColumn) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"DELETE FROM `column` WHERE `column`.`idColumn` = ?",
+				[idColumn],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 module.exports = {
 	insertUser,
 	insertColumn,
@@ -304,4 +334,6 @@ module.exports = {
 	readColumn,
 	createBoard,
 	assignBoardToUser,
+	deleteTasksFromColumn,
+	deleteColumn,
 };
