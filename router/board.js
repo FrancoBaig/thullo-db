@@ -13,6 +13,7 @@ const {
 	updateTaskCover,
 	updateBoardPrivacity,
 	readUserBoards,
+	searchUsersByEmail,
 	readColumn,
 	createBoard,
 	readBoard,
@@ -278,6 +279,17 @@ boardRouter.put("/privacity", async (req, res) => {
 		await updateBoardPrivacity(pool, data);
 
 		return res.status(200).end();
+	} catch (err) {
+		console.log(err);
+	}
+});
+
+boardRouter.get("/users/:string", async (req, res) => {
+	const string = req.params.string;
+
+	try {
+		const response = await searchUsersByEmail(pool, string);
+		return res.status(200).json(response);
 	} catch (err) {
 		console.log(err);
 	}

@@ -85,6 +85,21 @@ function readEmail(pool, email) {
 	});
 }
 
+function searchUsersByEmail(pool, string) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"SELECT `user`.`userId`, `user`.`name`, `user`.`email`, `user`.`imgUrl`  FROM `user` WHERE INSTR(`user`.`email`, ?) > 0 LIMIT 5",
+				[string.toLowerCase()],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 function readUserBoards(pool, userId) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
@@ -348,6 +363,7 @@ module.exports = {
 	readUserBoards,
 	readBoard,
 	readColumn,
+	searchUsersByEmail,
 	createBoard,
 	assignBoardToUser,
 	deleteTasksFromColumn,
