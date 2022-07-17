@@ -11,6 +11,7 @@ const {
 	updateTaskTitle,
 	updateTaskDescription,
 	updateTaskCover,
+	updateBoardPrivacity,
 	readUserBoards,
 	readColumn,
 	createBoard,
@@ -258,6 +259,23 @@ boardRouter.put("/column", async (req, res) => {
 		};
 
 		await updateColumnName(pool, data);
+
+		return res.status(200).end();
+	} catch (err) {
+		console.log(err);
+	}
+});
+
+boardRouter.put("/privacity", async (req, res) => {
+	const body = req.body;
+
+	try {
+		const data = {
+			boardId: body.boardId,
+			newPrivacity: !body.isPrivate,
+		};
+
+		await updateBoardPrivacity(pool, data);
 
 		return res.status(200).end();
 	} catch (err) {

@@ -316,6 +316,21 @@ function deleteColumn(pool, idColumn) {
 	});
 }
 
+function updateBoardPrivacity(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"UPDATE `board` SET `isPrivate` = ? WHERE `board`.`boardId` = ? ",
+				[data.newPrivacity, data.boardId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 module.exports = {
 	insertUser,
 	insertColumn,
@@ -326,6 +341,7 @@ module.exports = {
 	updateTaskTitle,
 	updateTaskDescription,
 	updateTaskCover,
+	updateBoardPrivacity,
 	readEmail,
 	updatePhoto,
 	updateBoardDescription,
