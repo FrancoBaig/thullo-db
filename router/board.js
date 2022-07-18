@@ -23,6 +23,7 @@ const {
 	deleteColumn,
 	deleteUserHasBoard,
 	readAllUsersFromBoard,
+	readLabelsFromTasks,
 } = require("../operations");
 
 boardRouter.get("/:boardId", async (req, res) => {
@@ -30,7 +31,34 @@ boardRouter.get("/:boardId", async (req, res) => {
 
 	try {
 		const response = await readColumn(pool, boardId);
-		return res.status(200).json(response);
+		const array = response
+			.filter((el) => el.idTask !== null)
+			.map((el) => el.idTask);
+
+		const labels = await readLabelsFromTasks(pool, array);
+
+		let labelsResult = {};
+
+		for (let lab of labels) {
+			const id = lab.Task_idTask;
+			if (!(id in labelsResult)) {
+				labelsResult = {
+					...labelsResult,
+					[lab.Task_idTask]: [lab],
+				};
+			} else {
+				labelsResult[lab.Task_idTask].push(lab);
+			}
+		}
+
+		const final = response.map((el) => {
+			return {
+				...el,
+				labels: labelsResult[el.idTask],
+			};
+		});
+
+		return res.status(200).json(final);
 	} catch (err) {
 		console.log(err);
 	}
@@ -344,10 +372,10 @@ boardRouter.delete("/:boardId/:userId", async (req, res) => {
 });
 
 boardRouter.post("/label", async (req, res) => {
-	const { taskId, text, color } = req.body;
+	const { task, text, color } = req.body;
 
 	const data = {
-		taskId: taskId,
+		taskId: task.id,
 		text: text,
 		color: color,
 	};

@@ -392,7 +392,7 @@ function insertNewLabel(pool, data) {
 	});
 }
 
-function readLabelsFromTasks(taskpool, tasksArray) {
+function readLabelsFromTasks(pool, tasksArray) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
 			if (err) throw err;
@@ -426,6 +426,7 @@ module.exports = {
 	readBoard,
 	readColumn,
 	readAllUsersFromBoard,
+	readLabelsFromTasks,
 	searchUsersByEmail,
 	createBoard,
 	assignBoardToUser,
