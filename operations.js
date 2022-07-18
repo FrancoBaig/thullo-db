@@ -376,10 +376,42 @@ function deleteUserHasBoard(pool, data) {
 	});
 }
 
+// Labels
+function insertNewLabel(pool, data) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"INSERT INTO `label` (`labelId`, `text`, `color`, `Task_idTask`) VALUES (NULL, ?, ?, ?)",
+				[data.text, data.color, data.taskId],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
+function readLabelsFromTasks(taskpool, tasksArray) {
+	return new Promise((resolve, reject) => {
+		pool.getConnection(function (err, connection) {
+			if (err) throw err;
+			connection.query(
+				"SELECT * FROM `label` WHERE `label`.`Task_idTask` IN (?)",
+				[tasksArray],
+				(err, result) => {
+					return err ? reject(err) : resolve(result);
+				}
+			);
+		});
+	});
+}
+
 module.exports = {
 	insertUser,
 	insertColumn,
 	insertTask,
+	insertNewLabel,
 	updateTaskOrder,
 	updateColumnName,
 	updateTaskColumn,

@@ -4,6 +4,7 @@ const pool = require("../mysql_connector");
 const {
 	insertColumn,
 	insertTask,
+	insertNewLabel,
 	updateBoardDescription,
 	updateColumnName,
 	updateTaskOrder,
@@ -336,6 +337,24 @@ boardRouter.delete("/:boardId/:userId", async (req, res) => {
 
 	try {
 		await deleteUserHasBoard(pool, data);
+		return res.status(200).end();
+	} catch (err) {
+		return res.json({ status: "error" });
+	}
+});
+
+boardRouter.post("/label", async (req, res) => {
+	const { taskId, text, color } = req.body;
+
+	const data = {
+		taskId: taskId,
+		text: text,
+		color: color,
+	};
+
+	try {
+		await insertNewLabel(pool, data);
+
 		return res.status(200).end();
 	} catch (err) {
 		return res.json({ status: "error" });
