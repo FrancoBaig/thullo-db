@@ -19,7 +19,7 @@ registerRouter.post("/signup", async (req, res) => {
 	if (password.length < 5) {
 		return res.json({
 			status: "error",
-			error: "Password too small. Should be at least 6 characters",
+			error: "Password should be at least 6 characters",
 		});
 	}
 
