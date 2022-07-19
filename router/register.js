@@ -78,6 +78,8 @@ registerRouter.post("/login", async (req, res) => {
 			image_id: user.imgUrl,
 		};
 
+		console.log("respuesta final", data);
+
 		return res.json({ status: "ok", data: data });
 	}
 

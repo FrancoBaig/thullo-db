@@ -29,6 +29,7 @@ function insertUser(pool, data) {
 				insertQuery,
 				[data.name, data.email, data.password],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -46,6 +47,7 @@ function insertColumn(pool, data) {
 				insertQuery,
 				[data.title, data.Board_boardId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -63,6 +65,7 @@ function insertTask(pool, data) {
 				insertQuery,
 				[data.content, data.idColumn, data.position],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -78,6 +81,7 @@ function readEmail(pool, email) {
 				"SELECT * FROM `user` WHERE `email`=?",
 				[email],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result[0]);
 				}
 			);
@@ -93,6 +97,7 @@ function searchUsersByEmail(pool, string) {
 				"SELECT `user`.`userId`, `user`.`name`, `user`.`email`, `user`.`imgUrl`  FROM `user` WHERE INSTR(`user`.`email`, ?) > 0 LIMIT 5",
 				[string.toLowerCase()],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -112,6 +117,7 @@ function readUserBoards(pool, userId) {
 				WHERE user.userId = ?`,
 				[userId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -127,6 +133,7 @@ function readBoard(pool, boardId) {
 				`SELECT * from "board" WHERE "board".boardId = ?`,
 				[boardId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -142,6 +149,7 @@ function readColumn(pool, boardId) {
 				"SELECT `column`.idColumn, `column`.title, task.idTask, task.content, task.content, task.coverUrl, task.description FROM `column` LEFT JOIN task ON `column`.`idColumn` = task.Column_idColumn WHERE `column`.`Board_boardId` = ? ORDER BY `task`.`position` ASC ",
 				[boardId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -157,6 +165,7 @@ function readAllUsersFromBoard(pool, boardId) {
 				"SELECT `user`.userId, `user`.name, `user`.email, `user`.imgUrl FROM `user` JOIN `user_has_board` ON `user`.userId = `user_has_board`.user_userId WHERE `user_has_board`.Board_boardId = ?",
 				[boardId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -172,6 +181,7 @@ function updatePhoto(pool, data) {
 				"UPDATE `user` SET `imgUrl`=? WHERE `userId`=?",
 				[data.imageId, data.userId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result[0]);
 				}
 			);
@@ -187,6 +197,7 @@ function updateTaskColumn(pool, data) {
 				"UPDATE `task` SET `Column_idColumn` = ? WHERE `task`.`idTask` = ?",
 				[data.idColumn, data.idTask],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result[0]);
 				}
 			);
@@ -202,6 +213,7 @@ function updateBoardDescription(pool, data) {
 				"UPDATE `board` SET `description` = ? WHERE `board`.`boardId` = ? ",
 				[data.description, data.boardId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -217,6 +229,7 @@ function updateColumnName(pool, data) {
 				"UPDATE `column` SET `title` = ? WHERE `column`.`idColumn` = ? ",
 				[data.title, data.idColumn],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -232,6 +245,7 @@ function updateTaskTitle(pool, data) {
 				"UPDATE `task` SET `task`.`content` = ? WHERE `task`.`idTask` = ? AND `Column_idColumn` = ?",
 				[data.newContent, data.idTask, data.idColumn],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -240,8 +254,6 @@ function updateTaskTitle(pool, data) {
 }
 
 function updateTaskDescription(pool, data) {
-	console.log("data pasada para cambiar description", data);
-
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
 			if (err) throw err;
@@ -249,6 +261,7 @@ function updateTaskDescription(pool, data) {
 				"UPDATE `task` SET `task`.`description` = ? WHERE `task`.`idTask` = ?",
 				[data.newDescription, data.idTask],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -264,6 +277,7 @@ function updateTaskCover(pool, data) {
 				"UPDATE `task` SET `task`.`coverUrl` = ? WHERE `task`.`idTask` = ? AND `Column_idColumn` = ?",
 				[data.newCoverUrl, data.idTask, data.idColumn],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -279,6 +293,7 @@ function updateTaskOrder(pool, data) {
 				"UPDATE `task` SET `position` = ? WHERE `task`.`idTask` = ? AND `task`.`Column_idColumn` = ? ",
 				[data.newPosition, data.taskId, data.idColumn],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -294,6 +309,7 @@ function createBoard(pool, data) {
 				"INSERT INTO `board` (`boardId`, `title`, `isPrivate`, `description`, `image_url`) VALUES (NULL, ?, ?, ?, ?)",
 				[data.title, data.isPrivate, data.description, data.image_url],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -309,6 +325,7 @@ function assignBoardToUser(pool, data) {
 				"INSERT INTO `user_has_board` (`user_userId`, `Board_boardId`) VALUES (?, ?)",
 				[data.userId, data.boardId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -324,6 +341,7 @@ function deleteTasksFromColumn(pool, idColumn) {
 				"DELETE FROM `task` WHERE `task`.Column_idColumn = ?",
 				[idColumn],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -339,6 +357,7 @@ function deleteColumn(pool, idColumn) {
 				"DELETE FROM `column` WHERE `column`.`idColumn` = ?",
 				[idColumn],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -354,6 +373,7 @@ function updateBoardPrivacity(pool, data) {
 				"UPDATE `board` SET `isPrivate` = ? WHERE `board`.`boardId` = ? ",
 				[data.newPrivacity, data.boardId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -369,6 +389,7 @@ function deleteUserHasBoard(pool, data) {
 				"DELETE FROM `user_has_board` WHERE `user_has_board`.`user_userId` = ? AND `user_has_board`.`Board_boardId` = ?",
 				[data.userId, data.boardId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -385,6 +406,7 @@ function insertNewLabel(pool, data) {
 				"INSERT INTO `label` (`labelId`, `text`, `color`, `Task_idTask`) VALUES (NULL, ?, ?, ?)",
 				[data.text, data.color, data.taskId],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
@@ -393,8 +415,6 @@ function insertNewLabel(pool, data) {
 }
 
 function readLabelsFromTasks(pool, tasksArray) {
-	console.log("tasksArray pasada", tasksArray);
-
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
 			if (err) throw err;
@@ -402,6 +422,7 @@ function readLabelsFromTasks(pool, tasksArray) {
 				"SELECT * FROM `label` WHERE `label`.`Task_idTask` IN (?)",
 				[tasksArray],
 				(err, result) => {
+					connection.release();
 					return err ? reject(err) : resolve(result);
 				}
 			);
