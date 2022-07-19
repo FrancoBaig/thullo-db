@@ -5,13 +5,13 @@ require("dotenv").config();
 
 // create the connection to database
 const pool = mysql.createPool({
-	host: process.env.HOSTD,
-	user: process.env.USERD,
-	database: process.env.DBD,
-	password: process.env.PASSWORDD,
-	// ssl: {
-	// 	rejectUnauthorized: false,
-	// },
+	host: process.env.HOST,
+	user: process.env.USER,
+	database: process.env.DB,
+	password: process.env.PASSWORD,
+	ssl: {
+		rejectUnauthorized: false,
+	},
 	waitForConnections: true,
 	connectionLimit: 20,
 });
