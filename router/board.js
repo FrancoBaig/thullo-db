@@ -35,30 +35,40 @@ boardRouter.get("/:boardId", async (req, res) => {
 			.filter((el) => el.idTask !== null)
 			.map((el) => el.idTask);
 
-		const labels = await readLabelsFromTasks(pool, array);
-
 		let labelsResult = {};
 
-		for (let lab of labels) {
-			const id = lab.Task_idTask;
-			if (!(id in labelsResult)) {
-				labelsResult = {
-					...labelsResult,
-					[lab.Task_idTask]: [lab],
+		if (array.length === 0) {
+			const final = response.map((el) => {
+				return {
+					...el,
+					labels: [],
 				};
-			} else {
-				labelsResult[lab.Task_idTask].push(lab);
+			});
+			return res.status(200).json(final);
+		} else {
+			const labels = await readLabelsFromTasks(pool, array);
+
+			for (let lab of labels) {
+				const id = lab.Task_idTask;
+				if (!(id in labelsResult)) {
+					labelsResult = {
+						...labelsResult,
+						[lab.Task_idTask]: [lab],
+					};
+				} else {
+					labelsResult[lab.Task_idTask].push(lab);
+				}
 			}
+
+			const final = response.map((el) => {
+				return {
+					...el,
+					labels: labelsResult[el.idTask],
+				};
+			});
+
+			return res.status(200).json(final);
 		}
-
-		const final = response.map((el) => {
-			return {
-				...el,
-				labels: labelsResult[el.idTask],
-			};
-		});
-
-		return res.status(200).json(final);
 	} catch (err) {
 		console.log(err);
 	}

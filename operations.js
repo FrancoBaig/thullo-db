@@ -393,6 +393,8 @@ function insertNewLabel(pool, data) {
 }
 
 function readLabelsFromTasks(pool, tasksArray) {
+	console.log("tasksArray pasada", tasksArray);
+
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
 			if (err) throw err;
