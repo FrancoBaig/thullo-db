@@ -12,8 +12,8 @@ app.use(cors());
 app.use(express.json());
 app.use(middleware.requestLogger);
 
-app.listen(3001, () => {
-	console.log("Listening port -> 3001");
+app.listen(process.env.PORT || 3001, () => {
+	console.log("Listening port");
 });
 
 app.use("/api/register", registerRouter);
